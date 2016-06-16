@@ -9,3 +9,8 @@ var config = {
 };
 
 firebase.initializeApp(config)
+
+//returns list of keys for tracking
+function readUsers {
+  
+}
