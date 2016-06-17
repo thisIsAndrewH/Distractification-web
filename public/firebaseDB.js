@@ -71,7 +71,20 @@ function getCountFromSlack(slackResponse) {
 
 //inserts data into database
 function insertData(user, date, count) {
-  alert(count)
+  // A post entry.
+  var postData = {
+    name: user,
+    date: date,
+    count: count
+  };
+
+  // Get a key for a new Post.
+  var newPostKey = firebase.database().ref().child('entires').push().key;
+
+  var updates = {};
+  updates['/entries/' + newPostKey] = postData;
+
+  return firebase.database().ref().update(updates);
 }
 
 getUsers();
