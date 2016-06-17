@@ -1,3 +1,9 @@
+/*
+  1. Checks for active users that require tracking
+  2. For active users, queries Slack for message count
+  3. Inserts message count into table for safe keeping
+*/
+
 // Initialize Firebase
 var config = {
   apiKey: "AIzaSyD7kiZUP7F_jtmtRpLnuQUUhABQwCvHvKg",
@@ -12,13 +18,22 @@ firebase.initializeApp(config)
 function getUsers() {
   //firebase.database.enableLogging(true);
 
-  var userRef = firebase.database().ref("users").orderByKey();
+  var userRef = firebase.database().ref("users");
   userRef.once("value").then(function(snapshot) {
     snapshot.forEach(function(childSnapshot) {
       // lists usernames but ignores if tracking is on or off
       var user = childSnapshot.key;
-      createURL(user);
+      var tracking = childSnapshot.val().tracking;
+      console.log(user);
+      console.log(tracking);
+
+      //allows to only fetch what we care about fetching
+      if (tracking) {
+        createURL(user);
+      }
+
     });
+
   });
 }
 
@@ -92,7 +107,5 @@ function updateSuccess() {
   var d = new Date();
   document.getElementById("lastUpdate").innerHTML = "Last Updated: " + d;
 }
-
-
 
 getUsers();
