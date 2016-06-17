@@ -22,7 +22,6 @@ function getUsers() {
   });
 }
 
-
 function createURL(user) {
   var token = user;
   //TODO: dynamically set dateAfter
@@ -39,17 +38,15 @@ function sendRequest(url, user, dateAfter) {
   var request = new XMLHttpRequest();
   request.open("GET", url, true);
   request.send();
-  console.log(request);
 
   // state changes
   request.onreadystatechange = function() {
   	if(request.readyState === 4) { // done
   		if(request.status === 200) { // complete
-  			//console.log(request.responseText);
         //parse data
         var messageCount = getCountFromSlack(request.responseText);
 
-        //send to database
+        //send to database if valid
         if (messageCount > -1) {
             insertData(user, dateAfter, messageCount);
         }
@@ -69,13 +66,12 @@ function getCountFromSlack(slackResponse) {
   }
 
   console.log("message count: " + count);
-
   return count;
 }
 
 //inserts data into database
 function insertData(user, date, count) {
-
+  alert(count)
 }
 
 getUsers();
