@@ -48,7 +48,7 @@ function sendRequest(url, user, dateAfter) {
 
         //send to database if valid
         if (messageCount > -1) {
-            insertData(user, dateAfter, messageCount);
+          insertData(user, dateAfter, messageCount);
         }
   		}
   	}
@@ -83,8 +83,16 @@ function insertData(user, date, count) {
 
   var updates = {};
   updates['/entries/' + newPostKey] = postData;
+  updateSuccess();
 
   return firebase.database().ref().update(updates);
 }
+
+function updateSuccess() {
+  var d = new Date();
+  document.getElementById("lastUpdate").innerHTML = "Last Updated: " + d;
+}
+
+
 
 getUsers();
