@@ -1,5 +1,3 @@
-// TODO: Replace with your project's customized code snippet
-
 // Initialize Firebase
 var config = {
   apiKey: "AIzaSyD7kiZUP7F_jtmtRpLnuQUUhABQwCvHvKg",
@@ -11,47 +9,68 @@ var config = {
 firebase.initializeApp(config)
 
 //returns list of keys for tracking
-function readUsers() {
+function getUsers() {
   //firebase.database.enableLogging(true);
-  var users = [];
 
   var userRef = firebase.database().ref("users").orderByKey();
   userRef.once("value").then(function(snapshot) {
     snapshot.forEach(function(childSnapshot) {
       // lists usernames but ignores if tracking is on or off
-      var key = childSnapshot.key;
-      users.push(key);
-      console.log("this is a user: "+key)
+      var user = childSnapshot.key;
+      createURL(user);
     });
-
   });
-
-
-//TODO: RESOLVE WHY THIS ARRAY ISN'T POPULATING OUTSIDE OF THE ABOVE FUCNTION
-  console.log("the array: " + users);
-  return users
 }
 
-function pollData() {
-  var users = readUsers();
-  console.log("users ready for polling: " + users);
 
-  //for each user query slack to get the count then take count and insert into database
+function createURL(user) {
+  var token = user;
+  //TODO: dynamically set dateAfter
+  var dateAfter = "2016-06-16"; // "YYYY-MM-dd"
+  var slackURL = "https://slack.com/api/search.messages?token=" + token + "&query=from:me%20after:" + dateAfter + "&pretty=1";
 
-
-
-  var a = ["a", "b", "c"];
-users.forEach(function(entry) {
-    console.log(entry);
-});
-
-  querySlack("");
-  insertData("","","");
-
+  //Submit request to Slack
+  sendRequest(slackURL, user, dateAfter);
+  console.log(slackURL);
+  console.log("user: " + user);
 }
 
-function querySlack(user) {
+function sendRequest(url, user, dateAfter) {
+  var request = new XMLHttpRequest();
+  request.open("GET", url, true);
+  request.send();
+  console.log(request);
 
+  // state changes
+  request.onreadystatechange = function() {
+  	if(request.readyState === 4) { // done
+  		if(request.status === 200) { // complete
+  			//console.log(request.responseText);
+        //parse data
+        var messageCount = getCountFromSlack(request.responseText);
+
+        //send to database
+        if (messageCount > -1) {
+            insertData(user, dateAfter, messageCount);
+        }
+  		}
+  	}
+  };
+}
+
+//takes response text and parses for the count and returns the count
+function getCountFromSlack(slackResponse) {
+  var count = -1;
+  //grab data and set messageCount
+  var response = JSON.parse(slackResponse);
+
+  if (response.ok === true) {
+    var count = response.messages.pagination.total_count;
+  }
+
+  console.log("message count: " + count);
+
+  return count;
 }
 
 //inserts data into database
@@ -59,4 +78,4 @@ function insertData(user, date, count) {
 
 }
 
-pollData();
+getUsers();
