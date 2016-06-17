@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Welcome to Firebase Hosting</title>
+    <script src="https://www.gstatic.com/firebasejs/3.0.2/firebase.js"></script>
+    <script src="firebaseDB.js"></script>
     <style media="screen">
       body {
         font-family: Roboto, Arial, sans-serif;
@@ -15,7 +17,7 @@
       }
 
       #message {
-        max-width: 400px;
+        max-width: 450px;
         margin: 40px auto;
         box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2),0 1px 1px 0 rgba(0,0,0,0.14),0 2px 1px -1px rgba(0,0,0,0.12);
         border-radius: 2px;
@@ -59,8 +61,9 @@
   </head>
   <body>
     <div id="message">
-      <h1>Welcome to Firebase Hosting</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
+      <h1>Distractification-web</h1>
+      <p>Goal: To gain a better understanding of how often messages are sent in a given day or week.</p>
+      <p id='lastUpdate'>Last Updated: </p>
       <ul>
         <li><a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a></li>
       </ul>
